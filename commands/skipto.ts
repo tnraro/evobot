@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bot } from "../index";
 import { i18n } from "../utils/i18n";
 import { canModifyQueue } from "../utils/queue";
+import { reply } from "../utils/reply";
 
 export default {
   data: new SlashCommandBuilder()
@@ -44,8 +45,7 @@ export default {
 
     queue.player.stop();
 
-    interaction
-      .reply({ content: i18n.__mf("skipto.result", { author: interaction.user.id, arg: playlistSlotArg - 1 }) })
-      .catch(console.error);
+    const content = { content: i18n.__mf("skipto.result", { author: interaction.user.id, arg: playlistSlotArg - 1 }) };
+    reply(interaction, content);
   }
 };

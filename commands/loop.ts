@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bot } from "../index";
 import { i18n } from "../utils/i18n";
 import { canModifyQueue } from "../utils/queue";
+import { reply } from "../utils/reply";
 
 export default {
   data: new SlashCommandBuilder().setName("loop").setDescription(i18n.__("loop.description")),
@@ -21,7 +22,6 @@ export default {
       content: i18n.__mf("loop.result", { loop: queue.loop ? i18n.__("common.on") : i18n.__("common.off") })
     };
 
-    if (interaction.replied) interaction.followUp(content).catch(console.error);
-    else interaction.reply(content).catch(console.error);
+    reply(interaction, content);
   }
 };

@@ -11,6 +11,7 @@ import { MusicQueue } from "../structs/MusicQueue";
 import { Playlist } from "../structs/Playlist";
 import { Song } from "../structs/Song";
 import { i18n } from "../utils/i18n";
+import { reduceDescriptions } from "../utils/playlistUtils";
 
 export default {
   data: new SlashCommandBuilder()
@@ -25,7 +26,8 @@ export default {
     PermissionsBitField.Flags.ManageMessages
   ],
   async execute(interaction: ChatInputCommandInteraction) {
-    let argSongName = interaction.options.getString("playlist");
+    let argSongName = interaction.options.getString("playlist") ??
+      interaction.options.getString("song");
 
     const guildMemer = interaction.guild!.members.cache.get(interaction.user.id);
     const { channel } = guildMemer!.voice;
@@ -77,14 +79,20 @@ export default {
       });
 
       bot.queues.set(interaction.guild!.id, newQueue);
-      newQueue.songs.push(...playlist.videos);
+      // newQueue.songs.push(...playlist.videos);
 
-      newQueue.enqueue(playlist.videos[0]);
+      // newQueue.enqueue(playlist.videos[0]);
+      newQueue.enqueue(...playlist.videos);
     }
 
     let playlistEmbed = new EmbedBuilder()
       .setTitle(`${playlist.data.title}`)
-      .setDescription(playlist.videos.map((song: Song, index: number) => `${index + 1}. ${song.title}`).join("\n"))
+      .setDescription(
+        reduceDescriptions(
+          playlist.videos.map((song: Song, index: number) => `${index + 1}. ${song.title}`),
+          2047
+        ).join("\n")
+      )
       .setURL(playlist.data.url!)
       .setColor("#F8AA2A")
       .setTimestamp();

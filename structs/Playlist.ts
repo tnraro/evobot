@@ -11,9 +11,11 @@ export class Playlist {
   public constructor(playlist: YoutubePlaylist) {
     this.data = playlist;
 
+    console.log(this.data.videos.length, config.MAX_PLAYLIST_SIZE);
+
     this.videos = this.data.videos
       .filter((video) => video.title != "Private video" && video.title != "Deleted video")
-      .slice(0, config.MAX_PLAYLIST_SIZE - 1)
+      // .slice(0, config.MAX_PLAYLIST_SIZE - 1)
       .map((video) => {
         return new Song({
           title: video.title!,

@@ -11,7 +11,7 @@ import {
   VoiceConnectionState,
   VoiceConnectionStatus
 } from "@discordjs/voice";
-import { CommandInteraction, Message, TextChannel, User } from "discord.js";
+import { CommandInteraction, Message, TextChannel, ThreadChannel, User } from "discord.js";
 import { promisify } from "node:util";
 import { bot } from "../index";
 import { QueueOptions } from "../interfaces/QueueOptions";
@@ -182,20 +182,30 @@ export class MusicQueue {
 
     try {
       playingMessage = await this.textChannel.send((newState.resource as AudioResource<Song>).metadata.startMessage());
-
-      await playingMessage.react("⏭");
-      await playingMessage.react("⏯");
-      await playingMessage.react("🔇");
-      await playingMessage.react("🔉");
-      await playingMessage.react("🔊");
-      await playingMessage.react("🔁");
-      await playingMessage.react("🔀");
-      await playingMessage.react("⏹");
     } catch (error: any) {
       console.error(error);
       this.textChannel.send(error.message);
       return;
     }
+
+    Promise.allSettled([
+      playingMessage.react("⏹"),
+      playingMessage.react("⏭"),
+      playingMessage.react("⏯"),
+      // playingMessage.react("🔇"),
+      // playingMessage.react("🔉"),
+      // playingMessage.react("🔊"),
+      playingMessage.react("🔁"),
+      playingMessage.react("🔀"),
+    ])
+      .then(values => {
+        for (const value of values) {
+          if (value.status !== "rejected") continue;
+
+          console.error(value.reason);
+          this.textChannel.send(value.reason?.message ?? value.reason);
+        }
+      });
 
     const filter = (reaction: any, user: User) => user.id !== this.textChannel.client.user!.id;
 

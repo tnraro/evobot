@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { bot } from "../index";
 import { i18n } from "../utils/i18n";
 import { canModifyQueue } from "../utils/queue";
+import { reply } from "../utils/reply";
 
 export default {
   data: new SlashCommandBuilder().setName("resume").setDescription(i18n.__("resume.description")),
@@ -24,9 +25,7 @@ export default {
     }
 
     const content = { content: i18n.__("resume.errorPlaying") };
-
-    if (interaction.replied) interaction.followUp(content).catch(console.error);
-    else interaction.reply(content).catch(console.error);
+    reply(interaction, content);
     return false;
   }
 };
