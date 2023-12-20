@@ -25,8 +25,8 @@ export default {
     PermissionsBitField.Flags.AddReactions,
     PermissionsBitField.Flags.ManageMessages
   ],
-  async execute(interaction: ChatInputCommandInteraction) {
-    let argSongName = interaction.options.getString("playlist") ??
+  async execute(interaction: ChatInputCommandInteraction, queryOptionName = "playlist") {
+    let argSongName = interaction.options.getString(queryOptionName) ??
       interaction.options.getString("song");
 
     const guildMemer = interaction.guild!.members.cache.get(interaction.user.id);
@@ -79,9 +79,6 @@ export default {
       });
 
       bot.queues.set(interaction.guild!.id, newQueue);
-      // newQueue.songs.push(...playlist.videos);
-
-      // newQueue.enqueue(playlist.videos[0]);
       newQueue.enqueue(...playlist.videos);
     }
 
@@ -96,11 +93,6 @@ export default {
       .setURL(playlist.data.url!)
       .setColor("#F8AA2A")
       .setTimestamp();
-
-    if (playlistEmbed.data.description!.length >= 2048)
-      playlistEmbed.setDescription(
-        playlistEmbed.data.description!.substr(0, 2007) + i18n.__("playlist.playlistCharLimit")
-      );
 
     if (interaction.replied)
       return interaction.editReply({

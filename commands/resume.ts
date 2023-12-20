@@ -17,10 +17,7 @@ export default {
 
     if (queue.player.unpause()) {
       const content = { content: i18n.__mf("resume.resultNotPlaying", { author: interaction.user.id }) };
-
-      if (interaction.replied) interaction.followUp(content).catch(console.error);
-      else interaction.reply(content).catch(console.error);
-
+      reply(interaction, content);
       return true;
     }
 

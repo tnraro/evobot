@@ -14,6 +14,7 @@ export default {
     if (!guildMemer || !canModifyQueue(guildMemer)) return i18n.__("common.errorNotChannel");
 
     queue.stop();
+
     const content = { content: i18n.__mf("stop.result", { author: interaction.user.id }) };
     reply(interaction, content);
   }

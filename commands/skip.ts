@@ -16,8 +16,7 @@ export default {
 
     queue.player.stop(true);
 
-    const content = { content: i18n.__mf("skip.result", { author: interaction.user.id }) };
-    
-    reply(interaction, content);
+    const content = { content: i18n.__mf("skip.result", { author: interaction.user.id }) }
+    reply(interaction, content)
   }
 };
